@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { personJsonLd, siteConfig } from "@/lib/site";
 
 // Load Inter for body text
 const inter = Inter({
@@ -18,8 +19,59 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Premium Portfolio",
-  description: "A sleek, ultra-premium portfolio engineered for impact.",
+  metadataBase: new URL(siteConfig.siteUrl),
+  title: {
+    default: siteConfig.title,
+    template: "%s | Aayan Sharma",
+  },
+  description: siteConfig.description,
+  keywords: [
+    "aayan sharma",
+    "aayan sharma portfolio",
+    "aayan sharma developer",
+    "full stack developer",
+    "next.js developer",
+  ],
+  authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: siteConfig.image,
+        width: 1200,
+        height: 630,
+        alt: "Aayan Sharma portfolio profile image",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [siteConfig.image],
+    creator: "@aayanships",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  category: "technology",
 };
 
 export default function RootLayout({
@@ -30,6 +82,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${instrumentSerif.variable} antialiased`}>
       <body className="min-h-screen bg-background text-foreground selection:bg-accent/30 selection:text-accent">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <div className="glass-main relative mx-auto max-w-4xl min-h-screen w-full sm:px-12 px-4 transition-colors duration-300">
             {children}

@@ -7,7 +7,7 @@ import { BentoGrid, BentoCard } from "@/components/bento-card";
 import { VisitorCount } from "@/components/visitor-count";
 import GitHubContributions from "@/components/github-contributions";
 import { FaGithub, FaXTwitter, FaLinkedin } from "react-icons/fa6";
-import { Mail, ChevronDown, Eye } from "lucide-react";
+import { Mail, ChevronDown } from "lucide-react";
 import {
   SiReact, SiJavascript, SiTypescript, SiMongodb,
   SiNextdotjs, SiNodedotjs, SiPostgresql, SiPrisma,
@@ -95,6 +95,9 @@ export default function Home() {
               <span className="font-medium text-foreground">I turn ideas into real products on the internet.</span>
             </p>
             <p>
+              I&apos;m <span className="text-foreground font-medium">Aayan Sharma</span>, a full stack developer focused on shipping real products, fast.
+            </p>
+            <p>
               While most people are still planning, I&apos;m already shipping - building full-stack apps, experimenting with AI, and launching things people can actually use.
             </p>
             <p>
@@ -104,14 +107,15 @@ export default function Home() {
 
           <div className="mt-8 flex gap-3">
             {[
-              { icon: FaGithub,   href: "https://github.com/Aayan15728" },
-              { icon: FaXTwitter, href: "https://x.com/aayanships" },
-              { icon: FaLinkedin, href: "https://www.linkedin.com/in/aayan-sharma91/" },
-              { icon: Mail,       href: "mailto:realgenz11@gmail.com" },
+              { icon: FaGithub, label: "GitHub", href: "https://github.com/Aayan15728" },
+              { icon: FaXTwitter, label: "X", href: "https://x.com/aayanships" },
+              { icon: FaLinkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/aayan-sharma91/" },
+              { icon: Mail, label: "Email", href: "mailto:realgenz11@gmail.com" },
             ].map((social, i) => (
               <a
                 key={i}
                 href={social.href}
+                aria-label={`${social.label} profile of Aayan Sharma`}
                 className="w-10 h-10 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-all duration-300 rounded-full flex items-center justify-center text-foreground hover:scale-105 active:scale-95"
               >
                 <social.icon className="w-[18px] h-[18px]" />
@@ -203,11 +207,11 @@ export default function Home() {
                 Aayan Sharma
               </h3>
               <p className="text-sm sm:text-base text-muted leading-relaxed max-w-md">
-                I'm a{" "}
+                I&apos;m a{" "}
                 <span className="text-foreground font-medium">Full Stack Developer</span> &amp; Open Source Contributor.
                   Also a Student, {currentAge} Years. I love building products to solve
                   real-world problems.{" "}
-                <span className="text-foreground/70">I'm specialized in building MVPs.</span>
+                <span className="text-foreground/70">I&apos;m specialized in building MVPs.</span>
               </p>
 
               {/* Skills */}
@@ -329,9 +333,10 @@ export default function Home() {
 	              { Icon: FaXTwitter, label: "X",        href: "https://x.com/aayanships" },
 	              { Icon: FaLinkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/aayan-sharma91/" },
 	            ].map(({ Icon, label, href }) => (
-	              <a
-	                key={label}
-	                href={href}
+              <a
+                key={label}
+                href={href}
+                aria-label={`${label} profile of Aayan Sharma`}
                 className="flex items-center gap-2 px-4 py-[9px] rounded-full border border-black/[0.09] dark:border-white/[0.09] bg-white/70 dark:bg-white/[0.04] hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-200 text-sm font-medium text-foreground/80 hover:text-foreground hover:scale-[1.02] active:scale-95 shadow-sm"
               >
                 <Icon className="w-[15px] h-[15px]" />
