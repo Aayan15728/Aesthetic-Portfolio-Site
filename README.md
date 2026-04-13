@@ -6,10 +6,24 @@
 
 ## Screenshots
 
+<<<<<<< HEAD
 ![Profile + Hero](./public/assets/mainphotoofaayan.jpg)
 ![Project Card - ZeroMRR](./public/assets/zeromrr.png)
 ![Project Card - GenZGames](./public/assets/genzgames.png)
 ![Project Card - SwiftYourLink](./public/assets/swiftyourlink.png)
+=======
+- (https://aayansharma.netlify.app)
+
+## Tech Stack
+
+- Next.js `16.2.2` (App Router)
+- React `19.2.4`
+- TypeScript `^5`
+- Tailwind CSS `^4`
+- Framer Motion
+- next-themes
+- ESLint (`eslint-config-next`)
+>>>>>>> 6c56dd82f87842a374aa9a7f0b7c0cbe6d3d7d75
 
 ## Features
 
