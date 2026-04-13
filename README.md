@@ -8,7 +8,7 @@ This project is open source and intended as both:
 
 ## Live Demo
 
-- [aayan-sharma.vercel.app](https://aayan-sharma.vercel.app)
+- (https://aayansharma.netlify.app)
 
 ## Tech Stack
 
