@@ -1,4 +1,4 @@
-const fallbackSiteUrl = "https://aayan-sharma.vercel.app";
+const fallbackSiteUrl = "https://aayansharma.netlify.app";
 
 function normalizeUrl(rawUrl?: string): string {
   if (!rawUrl) {
@@ -21,8 +21,13 @@ export const siteConfig = {
   title: "Aayan Sharma | Full Stack Developer Portfolio",
   description:
     "Aayan Sharma is a full stack developer building MVPs, AI projects, and high-performance web products. Explore the portfolio, projects, and contact links.",
-  siteUrl: normalizeUrl(process.env.NEXT_PUBLIC_SITE_URL ?? process.env.VERCEL_URL),
-  image: "/assets/mainphotoofaayan.jpg",
+  siteUrl: normalizeUrl(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+      process.env.URL ??
+      process.env.DEPLOY_PRIME_URL ??
+      process.env.VERCEL_URL
+  ),
+  image: "/assets/og-image.png",
   social: {
     github: "https://github.com/Aayan15728",
     x: "https://x.com/aayanships",

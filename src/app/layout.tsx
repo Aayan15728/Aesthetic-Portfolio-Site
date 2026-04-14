@@ -36,20 +36,21 @@ export const metadata: Metadata = {
   creator: siteConfig.name,
   publisher: siteConfig.name,
   alternates: {
-    canonical: "/",
+    canonical: siteConfig.siteUrl,
   },
   openGraph: {
     type: "website",
-    url: "/",
+    url: siteConfig.siteUrl,
     title: siteConfig.title,
     description: siteConfig.description,
     siteName: siteConfig.name,
+    locale: "en_US",
     images: [
       {
         url: siteConfig.image,
         width: 1200,
         height: 630,
-        alt: "Aayan Sharma portfolio profile image",
+        alt: "Aayan Sharma portfolio open graph image",
       },
     ],
   },
@@ -58,6 +59,7 @@ export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     images: [siteConfig.image],
+    site: "@aayanships",
     creator: "@aayanships",
   },
   robots: {
