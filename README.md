@@ -6,24 +6,11 @@
 
 ## Screenshots
 
-<<<<<<< HEAD
-![Profile + Hero](./public/assets/mainphotoofaayan.jpg)
-![Project Card - ZeroMRR](./public/assets/zeromrr.png)
-![Project Card - GenZGames](./public/assets/genzgames.png)
-![Project Card - SwiftYourLink](./public/assets/swiftyourlink.png)
-=======
-- (https://aayansharma.netlify.app)
-
-## Tech Stack
-
-- Next.js `16.2.2` (App Router)
-- React `19.2.4`
-- TypeScript `^5`
-- Tailwind CSS `^4`
-- Framer Motion
-- next-themes
-- ESLint (`eslint-config-next`)
->>>>>>> 6c56dd82f87842a374aa9a7f0b7c0cbe6d3d7d75
+![Portfolio Preview](./public/assets/preview-1.png)
+![Portfolio Preview 2](./public/assets/preview-2.png)
+![Portfolio Preview 3](./public/assets/preview-3.png)
+![Portfolio Preview 4](./public/assets/preview-4.png)
+![Portfolio Preview 5](./public/assets/preview-5.png)
 
 ## Features
 
@@ -34,23 +21,13 @@
 - Live GitHub contribution heatmap integration
 - Visitor counter (`/api/visitors`) with browser fingerprint dedupe
 - Social/contact links (GitHub, X, LinkedIn, email)
-- Built-in SEO foundation:
-  - Metadata + canonical
-  - Open Graph + Twitter cards
-  - JSON-LD Person schema
-  - `robots.txt`, `sitemap.xml`, and `manifest.webmanifest`
+- Built-in SEO foundation with metadata, Open Graph, Twitter cards, JSON-LD, robots, sitemap, and manifest
 
 ## Why This Exists
 
 Most portfolio templates look nice but feel generic.
 
-This project exists to be a practical, open-source portfolio that balances:
-- strong visual identity
-- real product/project proof
-- fast setup and easy customization
-- production-ready SEO defaults
-
-If you want a portfolio that feels personal instead of templated, this is the base.
+This project exists to be a practical, open-source portfolio that balances strong visual identity, real project proof, fast setup, and production-ready SEO defaults.
 
 ## Setup (3 Steps)
 
