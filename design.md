@@ -1,4 +1,4 @@
-# Athrix.me - Forensic UI/UX Design Audit
+#
 
 This document serves as the comprehensive "DNA" and source of truth for the structural and visual framework of athrix.me.
 
@@ -116,4 +116,4 @@ module.exports = {
 }
 ```
 
-The success of this design lies heavily in its strict adherence to constrained neutral color profiles, the use of fractional opacity borders (e.g. `border-black/[0.06]`), and the use of modern CSS group hover mechanics instead of complex JavaScript implementations.
+The success of this design lies heavily in its strict adherence to constrained neutral color profiles, the use of fractional opacity borders (e.g. `border-black/[0.06]`), and the use of modern CSS group hover mechanics instead of compl the compl
