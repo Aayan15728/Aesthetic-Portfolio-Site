@@ -12,9 +12,8 @@ export function CommandTrigger({ className }: { className?: string }) {
       onClick={() => window.dispatchEvent(new Event(OPEN_PALETTE_EVENT))}
       aria-label="Open command palette"
       className={cn(
-        "inline-flex items-center gap-1 rounded-md border border-black/[0.06] dark:border-white/10 bg-white dark:bg-white/5",
-        "shadow-[0_1px_2px_rgba(0,0,0,0.05)] px-2 py-1 text-[11px] text-muted",
-        "hover:text-foreground transition-colors duration-200 active:scale-95",
+        "liquid-glass inline-flex items-center gap-1 rounded-[10px] px-2.5 py-1.5 text-[11px] font-medium text-foreground/70",
+        "hover:text-foreground transition-[color,scale] duration-200 active:scale-95 [&>*]:relative [&>*]:z-[2]",
         className
       )}
     >

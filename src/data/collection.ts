@@ -40,10 +40,28 @@ export interface Song {
 
 export interface Movie {
   title: string;
-  director: string;
+  year?: number;
+  director?: string;
+  /** Your own poster image under /public (wins over the automatic lookup). */
+  posterSrc?: string;
+  /** Exact English Wikipedia article title, used to find the poster (e.g. "Fight_Club"). */
+  wikipedia?: string;
   /** Runtime in minutes. */
-  minutes: number;
+  minutes?: number;
   href?: string;
+  favorite?: boolean;
+}
+
+/** Anime and series share one shape; `kind` decides which section they appear in. */
+export interface Show {
+  title: string;
+  kind: "anime" | "series";
+  /** Your own poster image under /public (wins over the automatic lookup). */
+  posterSrc?: string;
+  /** What to search AniList / TVmaze for, if the title alone finds the wrong show. */
+  search?: string;
+  /** e.g. "partly watched" */
+  note?: string;
   favorite?: boolean;
 }
 
@@ -54,7 +72,7 @@ export interface WishlistItem {
 }
 
 export const collectionIntro =
-  "this is a living library of the books i've read and the songs i love. i add new things over time.";
+  "this is a living library of the books i've read, the songs, movies and shows i love. i add new things over time.";
 
 export const books: Book[] = [
   {
@@ -87,6 +105,25 @@ export const songs: Song[] = [
   { title: "Beat It", artist: "Michael Jackson", spotifyId: "1OOtq8tRnDM8kG2gqUPjAj", appleId: 269573341 },
 ];
 
-export const movies: Movie[] = [];
+export const movies: Movie[] = [
+  { title: "Steve Jobs", wikipedia: "Steve_Jobs_(film)", year: 2015, director: "Danny Boyle" },
+  { title: "Star Wars", wikipedia: "Star_Wars_(film)", year: 1977, director: "George Lucas" },
+  { title: "The Godfather Part II", wikipedia: "The_Godfather_Part_II", year: 1974, director: "Francis Ford Coppola" },
+  { title: "Fight Club", posterSrc: "/assets/posters/fight-club.jpg", wikipedia: "Fight_Club", year: 1999, director: "David Fincher" },
+  { title: "Harry Potter and the Goblet of Fire", posterSrc: "/assets/posters/harry-potter.jpg", wikipedia: "Harry_Potter_and_the_Goblet_of_Fire_(film)", year: 2005, director: "Mike Newell" },
+  { title: "The Dark Knight", wikipedia: "The_Dark_Knight", year: 2008, director: "Christopher Nolan" },
+  { title: "WALL-E", wikipedia: "WALL-E", year: 2008, director: "Andrew Stanton" },
+  { title: "Back to the Future", wikipedia: "Back_to_the_Future", year: 1985, director: "Robert Zemeckis" },
+];
 
-export const wishlist: WishlistItem[] = [{ title: "Ferrari SF90 Spyder" }, { title: "MacBook" }];
+export const shows: Show[] = [
+  { title: "Dragon Ball", kind: "anime" },
+  { title: "Naruto", kind: "anime" },
+  { title: "One Piece", kind: "anime", note: "partly watched" },
+  { title: "Attack on Titan", kind: "anime" },
+  { title: "Demon Slayer", kind: "anime", search: "Kimetsu no Yaiba" },
+  { title: "Suits", kind: "series", posterSrc: "/assets/posters/suits.jpg", favorite: true },
+  { title: "Peaky Blinders", kind: "series", favorite: true },
+];
+
+export const wishlist: WishlistItem[] = [{ title: "Ferrari SF90 Spyder" }, { title: "MacBook M5 Pro" }];

@@ -1,13 +1,14 @@
 import { getAllPosts } from "@/lib/posts";
 import { siteConfig } from "@/lib/site";
 
-export const dynamic = "force-static";
+// articles can be added or deleted on the site, so build the feed per request (cheap, and cached by the host)
+export const dynamic = "force-dynamic";
 
 const escape = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-export function GET() {
-  const items = getAllPosts()
+export async function GET() {
+  const items = (await getAllPosts())
     .map((post) => {
       const url = `${siteConfig.siteUrl}/writings/${post.slug}`;
       return `<item>
@@ -30,5 +31,7 @@ ${items}
 </channel>
 </rss>`;
 
-  return new Response(xml, { headers: { "Content-Type": "application/rss+xml; charset=utf-8" } });
+  return new Response(xml, {
+    headers: { "Content-Type": "application/rss+xml; charset=utf-8", "Cache-Control": "public, s-maxage=600, stale-while-revalidate=3600" },
+  });
 }

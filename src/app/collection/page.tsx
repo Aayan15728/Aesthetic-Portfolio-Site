@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { PageShell } from "@/components/page-shell";
 import { Bookshelf } from "@/components/bookshelf";
+import { PosterWall, type WallItem } from "@/components/poster-wall";
 import { VinylRecord } from "@/components/vinyl-record";
-import { books, collectionIntro, movies, songs, videos, wishlist } from "@/data/collection";
+import { books, collectionIntro, movies, shows, songs, videos, wishlist } from "@/data/collection";
+import { getAnimePoster, getMoviePoster, getSeriesPoster, withGlow } from "@/lib/media";
 import { getTrackMedia, spotifyTrackUrl } from "@/lib/tracks";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Collection",
-  description: "A living library of books, videos, songs and movies I love.",
+  description: "A living library of books, songs, movies and shows I love.",
   alternates: { canonical: "/collection" },
 };
 
@@ -57,18 +59,42 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default async function CollectionPage() {
-  const hasFavorites = [...books, ...videos, ...songs, ...movies].some((i) => i.favorite);
-  const songMedia = await Promise.all(songs.map((s) => getTrackMedia(s.appleId)));
+  const anime = shows.filter((s) => s.kind === "anime");
+  const series = shows.filter((s) => s.kind === "series");
+
+  // all lookups run in parallel and are cached for a week; missing artwork just becomes a typographic poster
+  const [songMedia, moviePosters, animePosters, seriesPosters] = await Promise.all([
+    Promise.all(songs.map((s) => getTrackMedia(s.appleId))),
+    Promise.all(movies.map(async (m) => withGlow(m.posterSrc, await getMoviePoster(m)))),
+    Promise.all(anime.map(async (s) => withGlow(s.posterSrc, await getAnimePoster(s.search ?? s.title)))),
+    Promise.all(series.map(async (s) => withGlow(s.posterSrc, await getSeriesPoster(s.search ?? s.title)))),
+  ]);
   const anyPreview = songMedia.some((m) => m.previewUrl);
+
+  const movieItems: WallItem[] = movies.map((m, i) => ({
+    title: m.title,
+    favorite: m.favorite,
+    meta: [m.year, m.director].filter(Boolean).join(" · "),
+    year: m.year,
+    director: m.director,
+    kind: "Feature film",
+    posterSrc: moviePosters[i].src,
+    color: moviePosters[i].color,
+    trailerQuery: `${m.title} ${m.year ?? ""}`.trim(),
+  }));
+  const toShowItems = (list: typeof shows, posters: typeof animePosters, label: string): WallItem[] =>
+    list.map((s, i) => ({
+      title: s.title,
+      favorite: s.favorite,
+      meta: s.note ? `${label} · ${s.note}` : label,
+      kind: s.note ? `${label} · ${s.note}` : label,
+      posterSrc: posters[i].src,
+      color: posters[i].color,
+      trailerQuery: s.search ?? s.title,
+    }));
 
   return (
     <PageShell title="Collection" description={collectionIntro}>
-      {hasFavorites && (
-        <p className="mb-8 text-sm text-muted">
-          items in <span className={favoriteText}>red</span> either hit me hard or are things i really want so badly.
-        </p>
-      )}
-
       {books.length > 0 && (
         <Section title="books i read">
           <Bookshelf books={books} />
@@ -93,26 +119,36 @@ export default async function CollectionPage() {
         </Section>
       )}
 
+      {movies.length > 0 && (
+        <Section title="movies i love">
+          <PosterWall items={movieItems} />
+        </Section>
+      )}
+
+      {anime.length > 0 && (
+        <Section title="anime i've watched">
+          <PosterWall items={toShowItems(anime, animePosters, "Anime")} />
+        </Section>
+      )}
+
+      {series.length > 0 && (
+        <Section title="favourite series">
+          <PosterWall items={toShowItems(series, seriesPosters, "Series")} />
+        </Section>
+      )}
+
+      {(movies.length > 0 || shows.length > 0) && (
+        <p className="pb-8 text-xs text-muted/70">
+          Poster artwork via Wikipedia, AniList and TVmaze; all artwork belongs to its respective studios and publishers.
+        </p>
+      )}
+
       {videos.length > 0 && (
         <Section title="must watch videos">
           <ul className="space-y-2.5">
             {videos.map((v) => (
               <Item key={v.title} title={v.title} href={v.href} favorite={v.favorite}>
                 <Meta>({v.duration})</Meta>
-              </Item>
-            ))}
-          </ul>
-        </Section>
-      )}
-
-      {movies.length > 0 && (
-        <Section title="movies i love">
-          <ul className="space-y-2.5">
-            {movies.map((m) => (
-              <Item key={m.title} title={m.title} href={m.href} favorite={m.favorite}>
-                <Meta>
-                  {m.director} ({m.minutes}m)
-                </Meta>
               </Item>
             ))}
           </ul>

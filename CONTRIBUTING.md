@@ -22,7 +22,7 @@ npx tsc --noEmit
 npm run build
 ```
 
-CI runs the same three checks. For UI changes, please also look at light mode, dark mode and a phone-sized screen.
+CI runs the same three checks. For UI changes, please also look at light mode, dark mode and a phone-sized screen, and follow [DESIGN.md](./DESIGN.md).
 
 ## Project layout
 
@@ -30,7 +30,7 @@ CI runs the same three checks. For UI changes, please also look at light mode, d
 | ----------------------- | ----------------------------------------------------------------- |
 | `src/app`               | Routes: `/`, `/projects`, `/writings`, `/collection`, `/goal`     |
 | `src/components`        | Reusable UI (frame, command palette, project cards, etc.)         |
-| `src/data`              | Your content: projects and the collection                         |
+| `src/data`              | Your content: projects, experience and the collection             |
 | `content/writings`      | Blog posts as `.mdx` files                                        |
 | `src/lib/site.ts`       | Name, description, social links, SEO defaults                     |
 | `src/lib/store.ts`      | Storage adapter (Supabase, or local JSON files as fallback)       |
@@ -39,7 +39,7 @@ CI runs the same three checks. For UI changes, please also look at light mode, d
 ## Making it yours
 
 1. Edit `src/lib/site.ts` and the copy in `src/app/page.tsx`.
-2. Replace the entries in `src/data/projects.ts` and `src/data/collection.ts`.
+2. Replace the entries in `src/data/projects.ts`, `src/data/experience.ts` and `src/data/collection.ts`.
 3. Delete the sample post in `content/writings` and add your own.
 4. Set the variables from `.env.example` in your hosting dashboard.
 

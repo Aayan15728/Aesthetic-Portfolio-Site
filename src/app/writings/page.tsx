@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PenLine } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
-import { formatDate, getAllPosts } from "@/lib/posts";
+import { PostsBrowser } from "@/components/posts-browser";
+import { isAdmin } from "@/lib/auth";
+import { getAllPosts } from "@/lib/posts";
 
 export const metadata: Metadata = {
   title: "Writings",
@@ -9,34 +12,21 @@ export const metadata: Metadata = {
   alternates: { canonical: "/writings", types: { "application/rss+xml": "/rss.xml" } },
 };
 
-export default function WritingsPage() {
-  const posts = getAllPosts();
+export default async function WritingsPage() {
+  const admin = await isAdmin();
+  const posts = await getAllPosts({ includeDrafts: admin });
 
   return (
-    <PageShell title="Writings" description="Notes, essays and things I've learned while building.">
-      {posts.length === 0 ? (
-        <p className="text-sm text-muted">Nothing here yet. Check back soon.</p>
-      ) : (
-        <ul className="divide-y divide-dashed divide-neutral-300/80 dark:divide-neutral-700/80">
-          {posts.map((post) => (
-            <li key={post.slug}>
-              <Link href={`/writings/${post.slug}`} className="group block py-5 first:pt-0">
-                <div className="flex items-baseline justify-between gap-4">
-                  <h2 className="text-[17px] font-medium text-foreground group-hover:text-accent transition-colors duration-200">
-                    {post.title}
-                  </h2>
-                  <span className="text-xs text-muted whitespace-nowrap">{formatDate(post.date)}</span>
-                </div>
-                {post.summary && <p className="mt-1.5 text-sm leading-relaxed text-muted">{post.summary}</p>}
-                <p className="mt-2 text-xs text-muted/70">
-                  {post.readingMinutes} min read
-                  {post.tags.length > 0 && <> &middot; {post.tags.map((t) => `#${t}`).join(" ")}</>}
-                </p>
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <PageShell title="Writings" description="Articles on building software, learning in public, and ideas from shipping real projects.">
+      {admin && (
+        <Link
+          href="/writings/new"
+          className="mb-6 inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3.5 py-2 text-sm font-medium text-background transition-all duration-200 hover:opacity-85 active:scale-[0.98]"
+        >
+          <PenLine className="h-4 w-4" /> New article
+        </Link>
       )}
+      {posts.length === 0 ? <p className="text-sm text-muted">Nothing here yet. Check back soon.</p> : <PostsBrowser posts={posts} admin={admin} />}
     </PageShell>
   );
 }

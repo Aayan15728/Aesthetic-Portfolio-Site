@@ -91,7 +91,7 @@ export function VinylRecord({ title, artist, artworkUrl, previewUrl, spotifyUrl 
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Open ${title} on Spotify`}
-            className="-m-1.5 shrink-0 p-1.5 text-muted transition-colors hover:text-[#1DB954]"
+            className="-m-1.5 shrink-0 p-1.5 pointer-coarse:-m-3 pointer-coarse:p-3 text-muted transition-colors hover:text-[#1DB954]"
           >
             <FaSpotify className="h-4 w-4" />
           </a>

@@ -60,5 +60,12 @@ const components = {
 };
 
 export function Mdx({ source }: { source: string }) {
-  return <MDXRemote source={source} components={components} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />;
+  // blockJS: articles can be written on the site, so never evaluate JavaScript expressions inside them
+  return (
+    <MDXRemote
+      source={source}
+      components={components}
+      options={{ blockJS: true, blockDangerousJS: true, mdxOptions: { remarkPlugins: [remarkGfm] } }}
+    />
+  );
 }

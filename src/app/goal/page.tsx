@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Check, Lock, Plus, Trash2 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { adminEnabled, isAdmin } from "@/lib/auth";
-import { MAX_GOAL_LENGTH, effectiveProgress, listGoals, type Goal } from "@/lib/goals";
+import { MAX_GOAL_LENGTH, effectiveProgress, formatPair, listGoals, type Goal } from "@/lib/goals";
 import { isPersistent } from "@/lib/store";
 import { formatDate } from "@/lib/posts";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,7 @@ import {
   deleteGoalAction,
   loginAction,
   logoutAction,
+  setNumbersAction,
   setProgressAction,
   toggleGoalAction,
 } from "./actions";
@@ -23,6 +24,10 @@ export const metadata: Metadata = {
 
 const inputClass =
   "h-10 w-full rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-white/5 px-3 text-sm text-foreground placeholder:text-muted/60 outline-none focus:border-accent transition-colors";
+const smallInput =
+  "h-7 rounded-md border border-black/10 dark:border-white/10 bg-white dark:bg-white/5 px-2 text-xs text-foreground placeholder:text-muted/60 outline-none focus:border-accent";
+const smallButton =
+  "h-7 rounded-md border border-dashed border-neutral-300/80 dark:border-neutral-700/80 px-2.5 text-xs text-muted transition-colors hover:text-foreground";
 const buttonClass =
   "inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-85 active:scale-[0.98]";
 
@@ -77,27 +82,76 @@ function GoalRow({ goal, admin }: { goal: Goal; admin: boolean }) {
         {goal.done && goal.completedAt && (
           <p className="mt-1 text-xs text-muted/70">Completed {formatDate(goal.completedAt.slice(0, 10))}</p>
         )}
+        {goal.target !== undefined && (
+          <p className="mt-1.5 text-xs tabular-nums text-muted">
+            <span className="font-medium text-foreground">{formatPair(goal.current ?? 0, goal.target, goal.unit).now}</span> of{" "}
+            {formatPair(goal.current ?? 0, goal.target, goal.unit).total}
+          </p>
+        )}
         {admin && (
-          <form action={setProgressAction} className="mt-2 flex items-center gap-1.5">
-            <input type="hidden" name="id" value={goal.id} />
-            <input
-              type="number"
-              name="progress"
-              min={0}
-              max={100}
-              step={1}
-              defaultValue={percent}
-              aria-label={`Progress for ${goal.text}`}
-              className="h-7 w-16 rounded-md border border-black/10 dark:border-white/10 bg-white dark:bg-white/5 px-2 text-xs text-foreground outline-none focus:border-accent"
-            />
-            <span className="text-xs text-muted">%</span>
-            <button
-              type="submit"
-              className="h-7 rounded-md border border-dashed border-neutral-300/80 dark:border-neutral-700/80 px-2 text-xs text-muted transition-colors hover:text-foreground"
+          <div className="mt-2.5 space-y-1.5">
+            {/* real numbers: the percentage is worked out for you (current / target) */}
+            <form
+              key={`${goal.id}-${goal.current}-${goal.target}-${goal.unit}`}
+              action={setNumbersAction}
+              className="flex flex-wrap items-center gap-1.5"
             >
-              Update
-            </button>
-          </form>
+              <input type="hidden" name="id" value={goal.id} />
+              <input
+                type="number"
+                name="current"
+                min={0}
+                step="any"
+                defaultValue={goal.current ?? ""}
+                placeholder="Now"
+                aria-label={`Current amount for ${goal.text}`}
+                className={`${smallInput} w-20`}
+              />
+              <span className="text-xs text-muted">of</span>
+              <input
+                type="number"
+                name="target"
+                min={0}
+                step="any"
+                defaultValue={goal.target ?? ""}
+                placeholder="Target"
+                aria-label={`Target for ${goal.text}`}
+                className={`${smallInput} w-24`}
+              />
+              <input
+                name="unit"
+                maxLength={12}
+                defaultValue={goal.unit ?? ""}
+                placeholder="$ or unit"
+                aria-label={`Unit for ${goal.text}`}
+                className={`${smallInput} w-24`}
+              />
+              <button type="submit" className={smallButton}>
+                Update
+              </button>
+            </form>
+
+            {goal.target === undefined && (
+              <form action={setProgressAction} className="flex items-center gap-1.5">
+                <input type="hidden" name="id" value={goal.id} />
+                <span className="text-xs text-muted/70">or set the % directly:</span>
+                <input
+                  type="number"
+                  name="progress"
+                  min={0}
+                  max={100}
+                  step={1}
+                  defaultValue={percent}
+                  aria-label={`Progress for ${goal.text}`}
+                  className={`${smallInput} w-16`}
+                />
+                <span className="text-xs text-muted">%</span>
+                <button type="submit" className={smallButton}>
+                  Update
+                </button>
+              </form>
+            )}
+          </div>
         )}
       </div>
 

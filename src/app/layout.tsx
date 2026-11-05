@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Inter } from "next/font/google";
+import { Geist, Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider, ThemeColorSync } from "@/components/theme-provider";
 import { FloatingRail } from "@/components/floating-rail";
 import { CommandPalette } from "@/components/command-palette";
 import { BottomGlass } from "@/components/bottom-glass";
+import { SmoothScroll } from "@/components/smooth-scroll";
+import { SiteCursor } from "@/components/site-cursor";
 import { personJsonLd, siteConfig } from "@/lib/site";
 
 // Load Inter for body text
@@ -19,6 +21,12 @@ const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   style: ["normal", "italic"],
   variable: "--font-instrument-serif",
+});
+
+// Load Geist for book names on the collection page
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
 });
 
 export const viewport: Viewport = {
@@ -100,14 +108,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${instrumentSerif.variable} antialiased`}>
-      <body className="min-h-dvh bg-background text-foreground selection:bg-accent/30 selection:text-accent">
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${instrumentSerif.variable} ${geist.variable} antialiased`}>
+      <body className="min-h-dvh bg-background text-foreground selection:bg-foreground selection:text-background">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <ThemeColorSync />
+          <SmoothScroll />
+          <SiteCursor />
           {/* clips the 100vw-wide dotted rules; body overflow alone doesn't, since it's handed to the viewport */}
           <div className="overflow-x-clip">
             <div className="frame">{children}</div>

@@ -43,3 +43,6 @@ next-env.d.ts
 
 # visitor data (local DB — swap for a real DB in production)
 /data/*.json
+
+# claude code
+.claude/

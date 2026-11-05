@@ -9,7 +9,7 @@ import { createHmac, timingSafeEqual } from "crypto";
  *
  * The cookie holds an HMAC derived from the password, so changing the password signs everyone out.
  */
-export const ADMIN_COOKIE = "admin_session";
+const ADMIN_COOKIE = "admin_session";
 const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 function secret(): string | null {

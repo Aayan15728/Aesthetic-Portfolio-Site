@@ -8,10 +8,11 @@
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-border-subtle: var(--border);
-  --color-accent: #006FEE;
+  --color-accent: var(--accent);
 
   --font-serif: var(--font-instrument-serif), serif;
   --font-sans: var(--font-inter), sans-serif;
+  --font-geist: var(--font-geist-sans), sans-serif;
 
   --radius-2xl: 1rem;
 }
@@ -21,15 +22,36 @@
   --background: #FCFCFC;
   --foreground: #171717;
   --muted: #737373;
+  --accent: #171717; /* black, not blue */
   --line: rgba(0, 0, 0, 0.22);
   --border: rgba(0, 0, 0, 0.06);
   --frame-width: min(760px, 100vw);
+  /* contribution graph levels: grey at rest, green on hover */
+  --gh-0: #ececea;
+  --gh-1: #b4b4b2;
+  --gh-2: #8a8a88;
+  --gh-3: #565655;
+  --gh-4: #171717;
+  --gh-g1: #9be9a8;
+  --gh-g2: #40c463;
+  --gh-g3: #30a14e;
+  --gh-g4: #216e39;
 }
 
 .dark {
   --background: #0A0A0A;
   --foreground: #F5F5F5;
   --muted: #A3A3A3;
+  --accent: #F5F5F5;
+  --gh-0: #1b1b1b;
+  --gh-1: #3d3d3d;
+  --gh-2: #6b6b6b;
+  --gh-3: #a3a3a3;
+  --gh-4: #f0f0f0;
+  --gh-g1: #0e4429;
+  --gh-g2: #006d32;
+  --gh-g3: #26a641;
+  --gh-g4: #39d353;
   --line: rgba(255, 255, 255, 0.2);
   --border: rgba(255, 255, 255, 0.06);
 }
@@ -50,6 +72,424 @@ body {
   overflow-x: clip;
   -webkit-tap-highlight-color: transparent;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── Custom cursor (src/components/site-cursor.tsx) ────────────────────── */
+/* The class is only added for a real mouse, so touch and no-JS keep the     */
+/* system cursor. Text fields and [data-native-cursor] areas keep it too.    */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+html.has-custom-cursor :is(input, textarea, select, [contenteditable="true"], [data-native-cursor], [data-native-cursor] *) {
+  cursor: auto !important;
+}
+
+.site-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  opacity: 0;
+}
+html:not(.has-custom-cursor) .site-cursor {
+  display: none;
+}
+.site-cursor__arrow,
+.site-cursor__label,
+.site-cursor__ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.site-cursor__arrow {
+  /* the arrow's tip (4,3) lands exactly on the pointer */
+  margin: -3px 0 0 -4px;
+}
+.site-cursor__body {
+  transform-origin: 4px 3px;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.site-cursor__body[data-hover="true"] {
+  transform: scale(1.14);
+}
+.site-cursor__body[data-press="true"] {
+  transform: scale(0.84);
+}
+.site-cursor__label {
+  opacity: 0;
+  transform-origin: 0 0;
+  transition: opacity 0.18s ease;
+}
+.site-cursor__label[data-show="true"] {
+  opacity: 1;
+}
+.site-cursor__label > span {
+  display: block;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.site-cursor__ring {
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1.5px solid var(--foreground);
+  border-radius: 9999px;
+  opacity: 0;
+}
+@media print {
+  .site-cursor {
+    display: none;
+  }
+}
+
+/* ── GitHub contribution graph ───────────────────────────────────────────── */
+.gh-cell {
+  display: block;
+  border-radius: 2.5px;
+  padding: 0;
+  border: 0;
+  cursor: default;
+  opacity: 0;
+  transform: scale(0.4);
+  /* the slow background fade is what leaves a green trail behind the mouse */
+  transition: transform 0.15s ease, background-color 0.8s ease;
+}
+.gh-cell.gh-in {
+  /* resting state is plain and visible; the pop is only an entrance (backwards fill), so nothing depends on a held end frame */
+  opacity: 1;
+  transform: none;
+  animation: gh-pop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.gh-cell:hover {
+  transform: scale(1.2) !important;
+  transition-duration: 0.15s, 0s;
+  position: relative;
+  z-index: 1;
+}
+.gh-cell.gh-l0:hover,
+.gh-cell.gh-l1:hover { background: var(--gh-g1); }
+.gh-cell.gh-l2:hover { background: var(--gh-g2); }
+.gh-cell.gh-l3:hover { background: var(--gh-g3); }
+.gh-cell.gh-l4:hover { background: var(--gh-g4); }
+.gh-legend {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 2.5px;
+}
+.gh-l0 { background: var(--gh-0); }
+.gh-l1 { background: var(--gh-1); }
+.gh-l2 { background: var(--gh-2); }
+.gh-l3 { background: var(--gh-3); }
+.gh-l4 { background: var(--gh-4); }
+@keyframes gh-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Liquid glass (profile picture frame, ⌘K button) ───────────────────── */
+/* A bright rim of inner highlights over a frosted fill, with a gloss on top. */
+/* Content above the gloss needs z-index 2.                                   */
+.liquid-glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.4);
+  -webkit-backdrop-filter: blur(10px) saturate(170%);
+  backdrop-filter: blur(10px) saturate(170%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.55),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.6),
+    0 0 0 0.5px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.07),
+    0 10px 22px -10px rgba(0, 0, 0, 0.3);
+}
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.15) 35%,
+    rgba(255, 255, 255, 0) 55%,
+    rgba(255, 255, 255, 0.28) 100%
+  );
+}
+.liquid-glass__reflection {
+  z-index: -1;
+  opacity: 0.45;
+  filter: blur(14px) saturate(1.2);
+  transform: scale(1.35) scaleX(-1);
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.liquid-glass:hover .liquid-glass__reflection {
+  transform: scale(1.6) scaleX(-1) translateY(-6%);
+}
+.dark .liquid-glass {
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.14),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.14),
+    0 0 0 0.5px rgba(255, 255, 255, 0.08),
+    0 10px 22px -10px rgba(0, 0, 0, 0.8);
+}
+.dark .liquid-glass__reflection {
+  opacity: 0.22;
+}
+.dark .liquid-glass::before {
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.05) 35%,
+    rgba(255, 255, 255, 0) 55%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+}
+
+/* ── Project card stage (src/components/project-card.tsx) ──────────────── */
+/* An accent gradient with the screenshot inset. The card sets --rx, --ry,    */
+/* --mx and --my from the pointer: the shot tilts and a spotlight follows.    */
+.project-card:hover {
+  border-color: color-mix(in srgb, var(--card-accent) 60%, transparent);
+}
+.project-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  perspective: 900px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--card-accent) 12%, #fff) 0%,
+    color-mix(in srgb, var(--card-accent) 55%, #fff) 45%,
+    var(--card-accent) 100%
+  );
+  transition: box-shadow 0.35s ease;
+}
+.project-card:hover .project-stage {
+  box-shadow: 0 18px 44px -18px color-mix(in srgb, var(--card-accent) 70%, transparent);
+}
+.project-stage__spot {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.3), transparent 70%);
+  transition: opacity 0.35s ease;
+}
+.project-stage__shot {
+  position: absolute;
+  inset: 20% -4% -5% 13%;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 12px 0 0 0;
+  background: #fff;
+  /* the soft glass lip around the screenshot, then its shadow */
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.3), 0 18px 40px -12px rgba(0, 0, 0, 0.35);
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-origin: 50% 100%;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+/* a band of light that sweeps across once on the way in */
+.project-stage__shot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.5) 50%, transparent 65%);
+  transform: translateX(-110%);
+}
+.project-card:hover .project-stage__spot {
+  opacity: 1;
+}
+.project-card:hover .project-stage__shot {
+  transform: translateY(-4%) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition-duration: 0.18s;
+}
+.project-card:hover .project-stage__shot::after {
+  transform: translateX(110%);
+  transition: transform 0.9s ease;
+}
+.project-stage__ribbon {
+  position: absolute;
+  top: 20px;
+  right: -40px;
+  z-index: 3;
+  width: 170px;
+  padding: 3px 0;
+  background: #fde047;
+  color: #171717;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  transform: rotate(40deg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+.project-stage__ribbon > span {
+  display: block;
+  overflow: hidden;
+  padding: 1px 0;
+  border-block: 1px dashed rgba(23, 23, 23, 0.55);
+  white-space: nowrap;
+}
+.project-stage__marquee {
+  display: flex;
+  width: max-content;
+  animation: ribbon-marquee linear infinite;
+}
+/* half the ribbon's width either side, so each item is fully gone before the next one appears */
+.project-stage__marquee > span {
+  padding-inline: 85px;
+}
+@keyframes ribbon-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Film strip (collection posters) ───────────────────────────────────── */
+/* A band of rounded sprocket holes: the mask cuts them out of the solid fill. */
+.film-strip {
+  height: 18px;
+  background: #1f1f1f;
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='18'><path fill-rule='evenodd' d='M0 0h22v18H0zM7 5h8a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='18'><path fill-rule='evenodd' d='M0 0h22v18H0zM7 5h8a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z'/></svg>");
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+
+/* ── Theatre marquee: rows of bulbs that chase each other ───────────────── */
+.marquee-bulbs {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 6px;
+  pointer-events: none;
+}
+.marquee-bulbs--top {
+  top: 5px;
+}
+.marquee-bulbs--bottom {
+  bottom: 5px;
+}
+.marquee-bulbs::before,
+.marquee-bulbs::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 3px 3px, #ffe9b0 0 2.1px, transparent 2.9px) 0 0 / 16px 6px repeat-x;
+  filter: drop-shadow(0 0 3px rgba(255, 224, 150, 0.85));
+  animation: bulb-a 1.3s steps(1, end) infinite;
+}
+.marquee-bulbs::after {
+  background-position: 8px 0;
+  animation-name: bulb-b;
+}
+@keyframes bulb-a {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.2;
+  }
+}
+@keyframes bulb-b {
+  0%,
+  49% {
+    opacity: 0.2;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+.marquee-swap {
+  animation: marquee-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes marquee-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Ticket stub: semicircle notches punched out at the perforation ───────── */
+.ticket {
+  -webkit-mask-image: radial-gradient(circle 9px at 0% 52%, transparent 8.5px, #000 9px),
+    radial-gradient(circle 9px at 100% 52%, transparent 8.5px, #000 9px);
+  mask-image: radial-gradient(circle 9px at 0% 52%, transparent 8.5px, #000 9px),
+    radial-gradient(circle 9px at 100% 52%, transparent 8.5px, #000 9px);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.barcode {
+  background: repeating-linear-gradient(
+    90deg,
+    #171717 0 1px,
+    transparent 1px 3px,
+    #171717 3px 5px,
+    transparent 5px 6px,
+    #171717 6px 7px,
+    transparent 7px 10px,
+    #171717 10px 13px,
+    transparent 13px 14px
+  );
+}
+
+/* ── Smooth scrolling (Lenis) ──────────────────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ── Hatched texture (quote bands, cover fallbacks) ────────────────────── */
+.hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--foreground) 9%, transparent) 0 1px,
+    transparent 1px 7px
+  );
 }
 
 /* ── Frame ─────────────────────────────────────────────────────────────── */
@@ -255,7 +695,36 @@ textarea {
     animation: none;
     transform: scaleY(0.6);
   }
+  .marquee-bulbs::before,
+  .marquee-bulbs::after {
+    animation: none;
+    opacity: 0.7;
+  }
+  .marquee-swap {
+    animation: none;
+  }
+  .gh-cell,
+  .gh-cell.gh-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
   .vinyl-disc {
     animation: none;
+  }
+  .project-stage__marquee {
+    animation: none;
+  }
+  .liquid-glass__reflection {
+    transition: none;
+  }
+  .project-stage__shot,
+  .project-card:hover .project-stage__shot {
+    transform: none;
+    transition: none;
+  }
+  .project-card:hover .project-stage__shot::after {
+    transform: translateX(-110%);
+    transition: none;
   }
 }

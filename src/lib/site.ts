@@ -17,6 +17,8 @@ function normalizeUrl(rawUrl?: string): string {
 
 export const siteConfig = {
   name: "Aayan Sharma",
+  /** ISO date; the age shown on the home page is calculated from it automatically. */
+  birthDate: "2011-11-04",
   keywordName: "aayan sharma",
   title: "Aayan Sharma | Full Stack Developer Portfolio",
   description:
