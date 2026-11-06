@@ -101,3 +101,5 @@ PRs are welcome. Read [CONTRIBUTING.md](./CONTRIBUTING.md) first.
 ## License
 
 The code is MIT, see [LICENSE](./LICENSE). This does not cover personal content or third-party artwork, such as the profile photo, book covers and posters. Replace those with your own in a fork.
+
+It also does not cover `public/swarm-cursors.js`, the rebuild effect. Its animation is adapted from [Joel Califa's Swarm](https://califa.github.io/swarm-site/) via [reveal-cursors](https://github.com/harshit403-pixel/reveal-cursors), and neither grants a license yet.
